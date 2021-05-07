@@ -16,12 +16,12 @@ class ApiService {
         headers: headers);
     print(response.statusCode);
     if (response.statusCode == 200) {
-      print(
-          'Result -- ${ImageResultModel.fromJson(json.decode(response.body)).items}');
+      // print(
+      //     'Result -- ${ImageResultModel.fromJson(json.decode(response.body)).items}');
       return ImageResultModel.fromJson(json.decode(response.body));
     } else {
-        print('Result -- ${ErrorResultModel
-            .fromJson(json.decode(response.body)).errorMessage}');
+        // print('Result -- ${ErrorResultModel
+        //     .fromJson(json.decode(response.body)).errorMessage}');
       return ErrorResultModel.fromJson(json.decode(response.body)).errorMessage;
     }
     // if (response.body.contains('errorCode')) {

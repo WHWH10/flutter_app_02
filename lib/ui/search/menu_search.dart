@@ -25,7 +25,6 @@ class _MenuSearchState extends State<MenuSearch> {
 
   void searchImage() async {
     imageResult = await ApiService().searchImage(widget.search);
-    print('===== ${imageResult.items[0].title}');
     imageResultList = imageResult.items;
     print(imageResultList);
   }
@@ -51,8 +50,23 @@ class _MenuSearchState extends State<MenuSearch> {
           children: [
             Container(
               height: 300,
+              width: double.infinity,
               color: mainColor,
-              child: Text(imageResultList[0].title, style: TextStyle(color: black),),
+              child: FutureBuilder(
+                future: ApiService().searchImage(widget.search),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  switch(snapshot.connectionState) {
+                    case ConnectionState.done:
+                      // ignore: missing_return
+                      return Text('${snapshot.data.items[0].title}');
+                    case ConnectionState.waiting:
+                      return CircularProgressIndicator();
+                    case ConnectionState.none:
+                      return Text('nothing');
+                  }
+                  return null;
+                },
+              ),
             )
           ],
         ),

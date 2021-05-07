@@ -57,8 +57,10 @@ class _MenuPopularDetailState extends State<MenuPopularDetail> {
 
   _addLatestItemBox() {
     _latestIemBox = Hive.box('latestItem');
-    _latestIemBox.put(
-        widget.name, LatestItemModel(name: widget.name, imageUrl: widget.tag));
+    _latestIemBox.containsKey(widget.tag)
+    ? null
+    : _latestIemBox.put(
+        widget.tag, LatestItemModel(name: widget.name, imageUrl: widget.tag));
   }
 
   @override

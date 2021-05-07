@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 // ignore: avoid_classes_with_only_static_members, public_member_api_docs
 
 String appName = 'Pick the Menu';
+String headerNaver = 'V0ntKP6PShJgFngp6oOd';
+String secretNaver = 'KcVG_TM42e';
+
+String searchImageUrl = 'https://openapi.naver.com/v1/search/image';
+String searchLocalUrl = 'https://openapi.naver.com/v1/search/local.json';
+String searchBlogUrl = 'https://openapi.naver.com/v1/search/blog.json';
 
 Color mainColor = Color(0xFFfb8500);
 Color lightColor = Color(0xFFffb703);

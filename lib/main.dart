@@ -10,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var dir = await getApplicationDocumentsDirectory();
   await Hive.init(dir.path);
-  // Hive.registerAdapter(LatestItemModelAdapter());
+  Hive.registerAdapter(LatestItemModelAdapter());
   await Hive.openBox<LatestItemModel>('latestItem');
   runApp(MyApp());
 }

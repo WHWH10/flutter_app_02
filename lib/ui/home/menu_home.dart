@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_02/model/category_model.dart';
 import 'package:flutter_app_02/model/latest_item_model.dart';
+import 'package:flutter_app_02/ui/detail/menu_popular_detail.dart';
+import 'package:flutter_app_02/ui/search/menu_search.dart';
 import 'package:flutter_app_02/utils/constant.dart';
 import 'package:flutter_app_02/utils/popular_card.dart';
 import 'package:hive/hive.dart';
@@ -16,6 +18,8 @@ class _MenuHomeState extends State<MenuHome> {
   List<CategoryModel> categoryModelList = [];
 
   Box<LatestItemModel> _latestIemBox;
+  PageController pageController;
+  int currentPage = 0;
 
   @override
   void initState() {
@@ -28,7 +32,11 @@ class _MenuHomeState extends State<MenuHome> {
           isSelected: false));
     }
     _latestIemBox = Hive.box('latestItem');
-    print('_------ ${_latestIemBox.length}');
+    pageController = PageController(
+      initialPage: currentPage,
+      keepPage: false,
+      viewportFraction: 0.5,
+    );
   }
 
   @override
@@ -37,6 +45,7 @@ class _MenuHomeState extends State<MenuHome> {
     _searchController?.dispose();
     _searchNode?.dispose();
     _latestIemBox.close();
+    pageController.dispose();
     super.dispose();
   }
 
@@ -289,13 +298,12 @@ class _MenuHomeState extends State<MenuHome> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold, color: black)),
+              child: Text('확인',
+                  style: TextStyle(fontWeight: FontWeight.bold, color: black)),
               style: ElevatedButton.styleFrom(
-                primary: white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)
-                )
-              ),
+                  primary: white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15))),
             )
           ],
         );
@@ -304,14 +312,14 @@ class _MenuHomeState extends State<MenuHome> {
   }
 
   void _searchMenu(String value) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => RmSearch(result: value)),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MenuSearch(search: value)),
+    );
   }
 
   void _latestItem() {
-    if(_latestIemBox.length == 0) {
+    if (_latestIemBox.length == 0) {
       showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -322,7 +330,8 @@ class _MenuHomeState extends State<MenuHome> {
               '최근 본 아이템',
               textAlign: TextAlign.center,
             ),
-            titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            titleTextStyle:
+                TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             content: Text('아직 본게 없어요'),
             contentTextStyle: TextStyle(fontSize: 15, height: 2),
             actions: <Widget>[
@@ -330,27 +339,76 @@ class _MenuHomeState extends State<MenuHome> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('확인', style: TextStyle(fontWeight: FontWeight.bold, color: black)),
+                child: Text('확인',
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, color: black)),
                 style: ElevatedButton.styleFrom(
                     primary: white,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)
-                    )
-                ),
+                        borderRadius: BorderRadius.circular(15))),
               )
             ],
           );
         },
       );
     } else {
+      Map _latestItemMap = _latestIemBox.toMap();
+      List _latestItemList = _latestItemMap.values.toList();
+
       showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            child: Text('아이템 나와랏 !!'),
-          );
-        }
-      );
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              height: 250,
+              child: ListView.builder(
+                itemCount: _latestItemList.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MenuPopularDetail(
+                                tag: _latestItemList[index].imageUrl,
+                                name: _latestItemList[index].name)),
+                      );
+                    },
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 200,
+                            width: 200,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: FadeInImage.assetNetwork(
+                              placeholder: 'assets/images/loading.png',
+                              image: _latestItemList[index].imageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Text(
+                              _latestItemList[index].name,
+                              style: TextStyle(
+                                  color: deepBlueColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          });
     }
   }
 }

@@ -33,7 +33,7 @@ class PopularCardState extends State<PopularCard> {
       height: 200,
       width: 250,
       child: GestureDetector(
-        onTap: () {
+        onTap: ()  {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MenuPopularDetail(tag: widget.imageUrl, name: widget.name)),

@@ -13,11 +13,21 @@ class MenuSearch extends StatefulWidget {
 }
 
 class _MenuSearchState extends State<MenuSearch> {
+  var imageResult;
+  List<Item> imageResultList = [];
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    ApiService().searchImage(widget.search);
+    searchImage();
+  }
+
+  void searchImage() async {
+    imageResult = await ApiService().searchImage(widget.search);
+    print('===== ${imageResult.items[0].title}');
+    imageResultList = imageResult.items;
+    print(imageResultList);
   }
 
   @override
@@ -42,6 +52,7 @@ class _MenuSearchState extends State<MenuSearch> {
             Container(
               height: 300,
               color: mainColor,
+              child: Text(imageResultList[0].title, style: TextStyle(color: black),),
             )
           ],
         ),
